@@ -3,60 +3,78 @@ package JavaStepByStep;
 
 import java.util.*;
 
+import static com.sun.tools.javac.jvm.ByteCodes.swap;
+import static java.util.Collections.swap;
+
 public class Main {
 
     public static void main(String[] args) {
-
         //Instantiate big bottle and small bottle
         Bottle bigBottle = new Bottle(5);
         Bottle smallBottle = new Bottle(3);
-
 
         //Input the target volume
         int targetVolume = getValidNumberInput();
 
         //To store result
-        List<String> results = new ArrayList<>();
+        List<String> results = searchSolutions(bigBottle,smallBottle,targetVolume);
 
-        results = getDesiredVolume(bigBottle,smallBottle,targetVolume);
-         for(int i = 0; i < results.size(); i++)
-             System.out.println("Solution: "+results.get(i));
+        System.out.println("Solutions are:");
+        for(int i = 0; i < results.size()-1; i++) {
+            for(int j = results.size()-1;j > i;j--){
+                if(results.get(j-1).length() >results.get(j).length()){
+                    swap(results,j-1,j);
+                }
+            }
+        }
+        for(String str : results)
+            System.out.println(str);
+        System.out.println();
+        System.out.println("Simplest solution would be:");
 
+        System.out.println(results.get(0));
     }
 
-    private static List<String> getDesiredVolume(Bottle bigBottle, Bottle smallBottle,int targetVolume){
-
+    private static List<String> searchSolutions(Bottle bigBottle, Bottle smallBottle,int targetVolume){
         List<String> results = new ArrayList<>();
-
-        while ((bigBottle.getCurrentVolume() != targetVolume) && (smallBottle.getCurrentVolume()!= targetVolume)){
-            //To describe result
-            StringBuilder resultDetail = new StringBuilder();
-            resetBottles(bigBottle,smallBottle);
-            switch ((int)(Math.random()*2)){
-                case 0:
-                    bigBottle.fillBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
-                    String str1 = beginFillingBottle(bigBottle,smallBottle,targetVolume);
-                    if(str1!=null){
-                        resultDetail.append(str1);
-                        if(!results.contains(resultDetail.toString()) ){
-                            results.add(resultDetail.toString());
+        int round = 50;
+        System.out.println("Check would be "+round+" times!");
+        while(round > 0) {
+            round--;
+            System.out.println("Under checking and "+round+" times left.");
+            resetBottles(bigBottle, smallBottle);
+            while ((bigBottle.getCurrentVolume() != targetVolume) && (smallBottle.getCurrentVolume() != targetVolume)) {
+                //To record result
+                StringBuilder resultDetail = new StringBuilder();
+                resetBottles(bigBottle, smallBottle);
+                switch ((int) (Math.random() * 2)) {
+                    case 0:
+                        bigBottle.fillBottle();
+                        resultDetail.append("Begin with big bottle: [" + bigBottle.getCurrentVolume() + "," + smallBottle.getCurrentVolume() + "]" + "-->");
+                        String str1 = tryAllPossibilities(bigBottle, smallBottle, targetVolume);
+                        if (str1 != null) {
+                            resultDetail.append(str1);
+                            if (!results.contains(resultDetail.toString())) {
+                                results.add(resultDetail.toString());
+                            }
                         }
-                    }
+                        break;
 
-                    break;
+                    case 1:
+                        smallBottle.fillBottle();
+                        resultDetail.append("Begin with small bottle: [" + bigBottle.getCurrentVolume() + "," + smallBottle.getCurrentVolume() + "]" + "-->");
+                        String str2 = tryAllPossibilities(bigBottle, smallBottle, targetVolume);
+                        if (str2 != null) {
+                            resultDetail.append(str2);
+                            if (!results.contains(resultDetail.toString())) {
+                                results.add(resultDetail.toString());
+                            }
+                        }
+                        break;
+                }
 
-                case 1:
-                    smallBottle.fillBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
-                    String str2 = beginFillingBottle(bigBottle,smallBottle,targetVolume);
-                    if(str2!=null){
-                        resultDetail.append(str2);
-                        if(!results.contains(resultDetail.toString()))
-                            results.add(resultDetail.toString());
-                    }
-                    break;
             }
+
         }
         return results;
     }
@@ -67,7 +85,7 @@ public class Main {
     //Rule 4 : To the same bottle, if there is no water then transfer behavior can not happen
     //Rule 5 : Between two bottles, if one bottle just got water transferred in, it can not transfer back on next behavior
 
-    private static String beginFillingBottle(Bottle bigBottle,Bottle smallBottle,int targetVolume){
+    private static String tryAllPossibilities(Bottle bigBottle,Bottle smallBottle,int targetVolume){
         int counter = 1;
         StringBuilder resultDetail = new StringBuilder();
         while ((bigBottle.getCurrentVolume() != targetVolume) && (smallBottle.getCurrentVolume() != targetVolume) && counter < 10) {
@@ -76,7 +94,7 @@ public class Main {
                     if(bigBottle.isJustFilled()) //Rule 1
                         continue;
                     bigBottle.fillBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    resultDetail.append("Fill big: ["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
@@ -84,7 +102,7 @@ public class Main {
                     if(smallBottle.isJustFilled()) //Rule 1
                         continue;
                     smallBottle.fillBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    resultDetail.append("Fill small: ["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
@@ -92,7 +110,7 @@ public class Main {
                     if(bigBottle.isJustGotTransferred() || bigBottle.getCurrentVolume() == 0) //Rule 1 and Rule 4
                         continue;
                     bigBottle.transferVolume(smallBottle);
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    resultDetail.append("Big transfer to small: ["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
@@ -100,7 +118,7 @@ public class Main {
                     if(smallBottle.isJustGotTransferred() || smallBottle.getCurrentVolume() == 0) //Rule 1 and Rule 4
                         continue;
                     smallBottle.transferVolume(bigBottle);
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    resultDetail.append("Small transfer to big: ["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
@@ -108,7 +126,7 @@ public class Main {
                     if(smallBottle.isJustEmptied() || smallBottle.getCurrentVolume() == 0 || smallBottle.isJustFilled()) //Rule 1 and Rule 2 and Rule 3
                         continue;
                     smallBottle.emptyBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    resultDetail.append("Empty big: ["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
@@ -116,14 +134,14 @@ public class Main {
                     if(bigBottle.isJustEmptied() ||bigBottle.getCurrentVolume() == 0 || bigBottle.isJustFilled()) //Rule 1 and Rule 2 and Rule 3
                         continue;
                     bigBottle.emptyBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    resultDetail.append("Empty small: ["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
             }
 
             if ((bigBottle.getCurrentVolume() == targetVolume) || (smallBottle.getCurrentVolume() == targetVolume)) {
-                System.out.println("--------------------------------------------");
                 resultDetail.append("Steps: "+counter);
+                //System.out.println(resultDetail.toString());
                 return resultDetail.toString();
             }
         }
@@ -142,7 +160,7 @@ public class Main {
                 Scanner scanner = new Scanner(System.in);
                 int targetVolume = scanner.nextInt();
                 if (targetVolume == 1 || targetVolume == 4){
-                    System.out.println("Target volume is: "+ targetVolume);
+                    System.out.println("Target volume is: "+ targetVolume+" Liter.");
                     return targetVolume;
                 }
                 else
