@@ -4,7 +4,7 @@ public class Bottle {
 
     private int currentVolume;
     private int fullVolume;
-    private int overTransferredVolume;
+    private int exceedVolume;
     private boolean justFilled;
     private boolean justEmptied;
     private boolean justGotTransferred;
@@ -39,7 +39,7 @@ public class Bottle {
 
     public void getTransferredVolume(int volume){
         if(currentVolume + volume >= fullVolume ){
-            overTransferredVolume = currentVolume +volume - fullVolume;
+            exceedVolume = currentVolume +volume - fullVolume;
             currentVolume = fullVolume;
         }
         else
@@ -79,10 +79,10 @@ public class Bottle {
     }
 
     public int getOverTransferredVolume() {
-        return overTransferredVolume;
+        return exceedVolume;
     }
 
     public void setOverTransferredVolume(int overTransferredVolume) {
-        this.overTransferredVolume = overTransferredVolume;
+        this.exceedVolume = overTransferredVolume;
     }
 }
