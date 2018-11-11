@@ -31,33 +31,23 @@ public class Main {
         while ((bigBottle.getCurrentVolume() != targetVolume) && (smallBottle.getCurrentVolume()!= targetVolume)){
             //To describe result
             StringBuilder resultDetail = new StringBuilder();
-
             resetBottles(bigBottle,smallBottle);
-            //System.out.println("Reset done");
             switch ((int)(Math.random()*2)){
                 case 0:
-                    //System.out.println("Begin with filling big Bottle:");
                     bigBottle.fillBottle();
-                    //System.out.println("Step 1 : Fill the big bottle");
-                    //System.out.println("Big bottle volume is: "+ bigBottle.getCurrentVolume()+". Small bottle volume is: "+smallBottle.getCurrentVolume());
                     resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     String str1 = beginFillingBottle(bigBottle,smallBottle,targetVolume);
                     if(str1!=null){
                         resultDetail.append(str1);
-                        System.out.println("ResultDetail first if is: "+resultDetail);
                         if(!results.contains(resultDetail.toString()) ){
                             results.add(resultDetail.toString());
-                            System.out.println("ResultDetail upper is: "+resultDetail);
                         }
                     }
-                    System.out.println("ResultDetail upper outside if: "+resultDetail);
+
                     break;
 
                 case 1:
-                    //System.out.println("Begin with filling small Bottle:");
                     smallBottle.fillBottle();
-                    //System.out.println("Step 1: Fill the small bottle");
-                    //System.out.println("Small bottle volume is: "+ smallBottle.getCurrentVolume()+". Big bottle volume is: "+bigBottle.getCurrentVolume());
                     resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     String str2 = beginFillingBottle(bigBottle,smallBottle,targetVolume);
                     if(str2!=null){
@@ -87,8 +77,6 @@ public class Main {
                         continue;
                     bigBottle.fillBottle();
                     resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
-                    //System.out.println("Step "+(counter+1)+" : Fill the big bottle");
-                    //System.out.println("Big bottle volume is: "+ bigBottle.getCurrentVolume()+". Small bottle volume is: "+smallBottle.getCurrentVolume());
                     counter++;
                     break;
 
@@ -97,8 +85,6 @@ public class Main {
                         continue;
                     smallBottle.fillBottle();
                     resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
-                    //System.out.println("Step "+(counter+1)+" : Fill the small bottle");
-                    //System.out.println("Big bottle volume is: "+ bigBottle.getCurrentVolume()+". Small bottle volume is: "+smallBottle.getCurrentVolume());
                     counter++;
                     break;
 
@@ -107,8 +93,6 @@ public class Main {
                         continue;
                     bigBottle.transferVolume(smallBottle);
                     resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
-                    //System.out.println("Step "+(counter+1)+" : Transfer from big bottle to small bottle");
-                    //System.out.println("Big bottle volume is: "+ bigBottle.getCurrentVolume()+". Small bottle volume is: "+smallBottle.getCurrentVolume());
                     counter++;
                     break;
 
@@ -117,8 +101,6 @@ public class Main {
                         continue;
                     smallBottle.transferVolume(bigBottle);
                     resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
-                    //System.out.println("Step "+(counter+1)+" : Transfer from small bottle to big bottle");
-                    //System.out.println("Big bottle volume is: "+ bigBottle.getCurrentVolume()+". Small bottle volume is: "+smallBottle.getCurrentVolume());
                     counter++;
                     break;
 
@@ -127,8 +109,6 @@ public class Main {
                         continue;
                     smallBottle.emptyBottle();
                     resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
-                    //System.out.println("Step "+(counter+1)+": Empty small bottle");
-                    //System.out.println("Big bottle volume is: "+ bigBottle.getCurrentVolume()+". Small bottle volume is: "+smallBottle.getCurrentVolume());
                     counter++;
                     break;
 
@@ -137,17 +117,13 @@ public class Main {
                         continue;
                     bigBottle.emptyBottle();
                     resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
-                    //System.out.println("Step "+(counter+1)+" : Empty big bottle");
-                    //System.out.println("Big bottle volume is: "+ bigBottle.getCurrentVolume()+". Small bottle volume is: "+smallBottle.getCurrentVolume());
                     counter++;
                     break;
             }
 
             if ((bigBottle.getCurrentVolume() == targetVolume) || (smallBottle.getCurrentVolume() == targetVolume)) {
-                //System.out.println(counter);
                 System.out.println("--------------------------------------------");
-                resultDetail.append("steps are "+ counter);
-                System.out.println("find answer"+resultDetail.toString());
+                resultDetail.append("Steps: "+counter);
                 return resultDetail.toString();
             }
         }
