@@ -4,11 +4,12 @@ public class Bottle {
 
     private int currentVolume;
     private int fullVolume;
+    private int overTransferredVolume;
+    private boolean justFilled;
+    private boolean justEmptied;
+    private boolean justGotTransferred;
 
 
-    public Bottle() {
-
-    }
     public Bottle(int fullVolume) {
         this.fullVolume = fullVolume;
     }
@@ -23,21 +24,65 @@ public class Bottle {
 
     public void fillBottle(){
          currentVolume = fullVolume;
+         justFilled = true;
+         justEmptied = false;
+         justGotTransferred = false;
     }
 
     public void emptyBottle(){
          currentVolume = 0;
+         justEmptied =true;
+         justFilled =false;
+         justGotTransferred = false;
     }
 
-    public void updateVolume(int volume){
-        if(currentVolume + volume >= fullVolume )
+
+    public void getTransferredVolume(int volume){
+        if(currentVolume + volume >= fullVolume ){
+            overTransferredVolume = currentVolume +volume - fullVolume;
             currentVolume = fullVolume;
+        }
         else
             currentVolume += volume;
+         justGotTransferred = true;
     }
 
-    public void transferredVolume(Bottle theOtherBottle){
-       theOtherBottle.updateVolume(currentVolume);
-       currentVolume = 0;
+    public void transferVolume(Bottle theOtherBottle){
+       theOtherBottle.getTransferredVolume(currentVolume);
+       if(theOtherBottle.getOverTransferredVolume() > 0){
+           currentVolume = theOtherBottle.getOverTransferredVolume();
+           theOtherBottle.setOverTransferredVolume(0);
+       }
+       else
+           currentVolume = 0;
+       justFilled = false;
+       justEmptied = false;
+    }
+
+    public boolean isJustFilled() {
+        return justFilled;
+    }
+
+    public boolean isJustEmptied() {
+        return justEmptied;
+    }
+
+    public boolean isJustGotTransferred() {
+        return justGotTransferred;
+    }
+
+    public void resetBottle(){
+        currentVolume = 0;
+        justGotTransferred = false;
+        justEmptied = false;
+        justFilled = false;
+    }
+
+    public int getOverTransferredVolume() {
+        return overTransferredVolume;
+    }
+
+    public void setOverTransferredVolume(int overTransferredVolume) {
+        this.overTransferredVolume = overTransferredVolume;
     }
 }
