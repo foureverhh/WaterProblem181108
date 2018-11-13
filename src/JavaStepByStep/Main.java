@@ -18,19 +18,28 @@ public class Main {
         List<String> results = searchSolutions(bigBottle,smallBottle,targetVolume);
 
         System.out.println("Solutions are:");
-        for(int i = 0; i < results.size()-1; i++) {
-            for(int j = results.size()-1;j > i;j--){
-                if(results.get(j-1).length() >results.get(j).length()){
-                    swap(results,j-1,j);
-                }
-            }
-        }
-        for(String str : results)
-            System.out.println(str);
-        System.out.println();
+        bubbleSort(results);
+
+        showList(results);
         System.out.println("Simplest solution would be:");
 
         System.out.println(results.get(0));
+    }
+
+    private static void bubbleSort (List<String>  list){
+        for(int i = 0; i<list.size()-1; i++){
+            for(int j = 0; j < list.size()-i-1;j++)
+            {
+                if(list.get(j).length()>list.get(j+1).length())
+                    swap(list,j,j+1);
+            }
+        }
+    }
+
+    private static void showList(List<String> list){
+        for(String str : list){
+            System.out.println(str);
+        }
     }
 
     private static List<String> searchSolutions(Bottle bigBottle, Bottle smallBottle,int targetVolume){
@@ -77,11 +86,10 @@ public class Main {
         return results;
     }
 
-    //Rule 1 : To the same bottle, behavior can not just same as the previous one
+    //Rule 1 : To the same bottle, except for transfer , behavior can not just same as the previous one
     //Rule 2 : To the same bottle, can not empty after it just filled up
     //Rule 3 : To the same bottle, if there is no water then empty behavior can not happen
     //Rule 4 : To the same bottle, if there is no water then transfer behavior can not happen
-    //Rule 5 : Between two bottles, if one bottle just got water transferred in, it can not transfer back on next behavior
 
     private static String tryAllPossibilities(Bottle bigBottle,Bottle smallBottle,int targetVolume){
         int counter = 1;
@@ -90,58 +98,84 @@ public class Main {
             switch ((int) (Math.random() * 5)) {
                 case 0:
                     if(bigBottle.isJustFilled()) //Rule 1
-                        continue;
+                        {
+
+                            continue;
+                        }
                     bigBottle.fillBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    //System.out.println("fill big bottle");
+                    resultDetail.append("fill big["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
                 case 1:
                     if(smallBottle.isJustFilled()) //Rule 1
+                    {
+
                         continue;
+                    }
+
                     smallBottle.fillBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    //System.out.println("fill small bottle");
+                    resultDetail.append("fill small["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
                 case 2:
-                    if(bigBottle.isJustGotTransferred() || bigBottle.getCurrentVolume() == 0) //Rule 1 and Rule 4
+                    if( bigBottle.getCurrentVolume() == 0) //Rule 1 and Rule 4
+                    {
+
                         continue;
+                    }
                     bigBottle.transferVolume(smallBottle);
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    //System.out.println("big to small");
+                    resultDetail.append("big to small["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
                 case 3:
-                    if(smallBottle.isJustGotTransferred() || smallBottle.getCurrentVolume() == 0) //Rule 1 and Rule 4
+                    if( smallBottle.getCurrentVolume() == 0) //Rule 1 and Rule 4
+                    {
                         continue;
+                    }
                     smallBottle.transferVolume(bigBottle);
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    //System.out.println("small to big");
+                    resultDetail.append("small to big["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
                 case 4:
-                    if(smallBottle.isJustEmptied() || smallBottle.getCurrentVolume() == 0 || smallBottle.isJustFilled()) //Rule 1 and Rule 2 and Rule 3
+                    if(smallBottle.isJustEmptied() ||  smallBottle.isJustFilled() || smallBottle.getCurrentVolume() == 0) //Rule 1 and Rule 2 and Rule 3
+                    {
+
                         continue;
+                    }
                     smallBottle.emptyBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    //System.out.println("empty small");
+                    resultDetail.append("empty small["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
 
                 case 5:
                     if(bigBottle.isJustEmptied() ||bigBottle.getCurrentVolume() == 0 || bigBottle.isJustFilled()) //Rule 1 and Rule 2 and Rule 3
+                    {
+
                         continue;
+                    }
                     bigBottle.emptyBottle();
-                    resultDetail.append("["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
+                    //System.out.println("empty big");
+                    resultDetail.append("empty big["+bigBottle.getCurrentVolume()+","+smallBottle.getCurrentVolume()+"]"+"-->");
                     counter++;
                     break;
             }
 
             if ((bigBottle.getCurrentVolume() == targetVolume) || (smallBottle.getCurrentVolume() == targetVolume)) {
                 resultDetail.append("Steps: "+counter);
-                //System.out.println(resultDetail.toString());
                 return resultDetail.toString();
             }
+           /* if(counter == 10)
+                System.out.println("----------------------");
+                */
         }
         return null;
     }

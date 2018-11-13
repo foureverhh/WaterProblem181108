@@ -7,6 +7,7 @@ public class Bottle {
     private int exceedVolume;
     private boolean justFilled;
     private boolean justEmptied;
+    private boolean justTransferred;
     private boolean justGotTransferred;
 
 
@@ -18,14 +19,11 @@ public class Bottle {
         return currentVolume;
     }
 
-    public int getFullVolume(){
-        return fullVolume;
-    }
-
     public void fillBottle(){
          currentVolume = fullVolume;
          justFilled = true;
          justEmptied = false;
+         justTransferred = false;
          justGotTransferred = false;
     }
 
@@ -33,7 +31,8 @@ public class Bottle {
          currentVolume = 0;
          justEmptied =true;
          justFilled =false;
-         justGotTransferred = false;
+         justTransferred = false;
+        justGotTransferred = false;
     }
 
 
@@ -44,19 +43,29 @@ public class Bottle {
         }
         else
             currentVolume += volume;
-         justGotTransferred = true;
+        justTransferred = false;
+        justFilled = false;
+        justEmptied = false;
+        justGotTransferred = true;
     }
 
     public void transferVolume(Bottle theOtherBottle){
-       theOtherBottle.getTransferredVolume(currentVolume);
-       if(theOtherBottle.getOverTransferredVolume() > 0){
-           currentVolume = theOtherBottle.getOverTransferredVolume();
-           theOtherBottle.setOverTransferredVolume(0);
-       }
-       else
-           currentVolume = 0;
-       justFilled = false;
-       justEmptied = false;
+        //If a bottle has just transferred its water to the other bottle and made the other full
+        //, then the second transfer would empty the bottle but the other bottle stay full.
+        if(justTransferred  && theOtherBottle.getCurrentVolume() == theOtherBottle.getFullVolume()){
+            currentVolume = 0;
+        }
+        //If a bottle never transferred before, then if the volume being transferred and the current volume in the other
+        //bottle exceeds the full volume of the other bottle, and keep the exceed part in the original bottle
+        else if (theOtherBottle.getExceedVolume() >= 0){
+            theOtherBottle.getTransferredVolume(currentVolume);
+            currentVolume = theOtherBottle.getExceedVolume();
+            theOtherBottle.setExceedVolume(0);
+        }
+        justFilled = false;
+        justEmptied = false;
+        justTransferred = true;
+        justGotTransferred = false;
     }
 
     public boolean isJustFilled() {
@@ -67,22 +76,31 @@ public class Bottle {
         return justEmptied;
     }
 
-    public boolean isJustGotTransferred() {
-        return justGotTransferred;
+    public boolean isJustTransferred() {
+        return justTransferred;
     }
 
     public void resetBottle(){
         currentVolume = 0;
-        justGotTransferred = false;
+        justTransferred = false;
         justEmptied = false;
         justFilled = false;
+        justGotTransferred = false;
     }
 
-    public int getOverTransferredVolume() {
+    public boolean isJustGotTransferred() {
+        return justGotTransferred;
+    }
+
+    public int getExceedVolume() {
         return exceedVolume;
     }
 
-    public void setOverTransferredVolume(int overTransferredVolume) {
-        this.exceedVolume = overTransferredVolume;
+    public void setExceedVolume(int exceedVolume) {
+        this.exceedVolume = exceedVolume;
+    }
+
+    public int getFullVolume() {
+        return fullVolume;
     }
 }
