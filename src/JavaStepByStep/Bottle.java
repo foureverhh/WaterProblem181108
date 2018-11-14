@@ -23,16 +23,13 @@ public class Bottle {
          currentVolume = fullVolume;
          justFilled = true;
          justEmptied = false;
-         justTransferred = false;
-         justGotTransferred = false;
+
     }
 
     public void emptyBottle(){
          currentVolume = 0;
          justEmptied =true;
          justFilled =false;
-         justTransferred = false;
-        justGotTransferred = false;
     }
 
 

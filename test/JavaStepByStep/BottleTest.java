@@ -1,155 +1,193 @@
+package JavaStepByStep;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public class BottleTest {
+
+    private int currentVolume;
+    private int fullVolume = 5;
+    private int exceedVolume;
+    private boolean justFilled;
+    private boolean justEmptied;
+    private boolean justTransferred;
+    private boolean justGotTransferred;
+
+    @Test
+    //Test transfer water between two bottles
+    public void transCase() {
+        Bottle big = new Bottle(5);
+        Bottle small = new Bottle(3);
+
+        //Fill big bottle and then transfer water to small twice
+        //Fill big bottle
+        big.fillBottle();
+        assertTrue(big.isJustFilled());
+        assertEquals(big.getCurrentVolume(),5);
+        //Transfer water from big to small for the first time
+        big.transferVolume(small);
+        assertEquals(big.getCurrentVolume(),2);
+        assertTrue(big.isJustTransferred());
+        assertFalse(big.isJustGotTransferred());
+        assertFalse(big.isJustFilled());
+        assertEquals(small.getCurrentVolume(),3);
+        assertEquals(small.getExceedVolume(),0);
+        assertTrue(small.isJustGotTransferred());
+        assertFalse(small.isJustFilled());
+        assertFalse(small.isJustEmptied());
+        assertFalse(small.isJustTransferred());
+        //Transfer water from big to small for the second time
+        big.transferVolume(small);
+        assertEquals(big.getCurrentVolume(),0);
+        assertTrue(big.isJustTransferred());
+        assertFalse(big.isJustGotTransferred());
+        assertFalse(big.isJustFilled());
+        assertFalse(big.isJustEmptied());
+        assertEquals(small.getCurrentVolume(),3);
+        assertEquals(small.getExceedVolume(),0);
+        assertTrue(small.isJustGotTransferred());
+        assertFalse(small.isJustFilled());
+        assertFalse(small.isJustEmptied());
+        assertFalse(small.isJustTransferred());
 
 
-import org.junit.Test; 
-import org.junit.Before; 
-import org.junit.After; 
+        big.resetBottle();
+        small.resetBottle();
+        assertEquals(big.getCurrentVolume(),0);
+        assertEquals(small.getCurrentVolume(),0);
+        //Fill big bottle and then transfer water to small, and then get water transferred back from small to big
+        big.fillBottle();
+        big.transferVolume(small);
+        small.transferVolume(big);
+        assertEquals(big.getCurrentVolume(),5);
+        assertFalse(big.isJustTransferred());
+        assertTrue(big.isJustGotTransferred());
+        assertFalse(big.isJustFilled());
+        assertFalse(big.isJustEmptied());
+        assertEquals(small.getCurrentVolume(),0);
+        assertFalse(small.isJustGotTransferred());
+        assertFalse(small.isJustFilled());
+        assertFalse(small.isJustEmptied());
+        assertTrue(small.isJustTransferred());
 
-/** 
-* Bottle Tester. 
-* 
-* @author <Authors name> 
-* @since <pre>nov 13, 2018</pre> 
-* @version 1.0 
-*/ 
-public class BottleTest { 
+        big.resetBottle();
+        small.resetBottle();
+        assertEquals(big.getCurrentVolume(),0);
+        assertEquals(small.getCurrentVolume(),0);
+        //Fill small bottle first and transfer water back to big bottle twice
+        small.fillBottle();
+        assertEquals(small.getCurrentVolume(),3);
+        //Transfer water first time
+        small.transferVolume(big);
+        assertEquals(big.getCurrentVolume(),3);
+        assertFalse(big.isJustTransferred());
+        assertTrue(big.isJustGotTransferred());
+        assertFalse(big.isJustFilled());
+        assertFalse(big.isJustEmptied());
+        assertEquals(small.getCurrentVolume(),0);
+        assertFalse(small.isJustGotTransferred());
+        assertFalse(small.isJustFilled());
+        assertFalse(small.isJustEmptied());
+        assertTrue(small.isJustTransferred());
+        //Transfer water again
+        small.transferVolume(big);
+        assertEquals(big.getCurrentVolume(),3);
+        assertFalse(big.isJustTransferred());
+        assertTrue(big.isJustGotTransferred());
+        assertFalse(big.isJustFilled());
+        assertFalse(big.isJustEmptied());
+        assertEquals(small.getCurrentVolume(),0);
+        assertFalse(small.isJustGotTransferred());
+        assertFalse(small.isJustFilled());
+        assertFalse(small.isJustEmptied());
+        assertTrue(small.isJustTransferred());
 
-@Before
-public void before() throws Exception { 
-} 
+        big.resetBottle();
+        small.resetBottle();
+        assertEquals(big.getCurrentVolume(),0);
+        assertEquals(small.getCurrentVolume(),0);
+        //Fill small bottle and then transfer water to big, and then get water transferred back from big to small
+        small.fillBottle();
+        assertEquals(small.getCurrentVolume(),3);
+        //Transfer water first time
+        small.transferVolume(big);
+        assertEquals(big.getCurrentVolume(),3);
+        assertFalse(big.isJustTransferred());
+        assertTrue(big.isJustGotTransferred());
+        assertFalse(big.isJustFilled());
+        assertFalse(big.isJustEmptied());
+        assertEquals(small.getCurrentVolume(),0);
+        assertFalse(small.isJustGotTransferred());
+        assertFalse(small.isJustFilled());
+        assertFalse(small.isJustEmptied());
+        assertTrue(small.isJustTransferred());
+        //Get water back from big to small
+        big.transferVolume(small);
+        assertEquals(big.getCurrentVolume(),0);
+        assertTrue(big.isJustTransferred());
+        assertFalse(big.isJustGotTransferred());
+        assertFalse(big.isJustFilled());
+        assertFalse(big.isJustEmptied());
+        assertEquals(small.getCurrentVolume(),3);
+        assertTrue(small.isJustGotTransferred());
+        assertFalse(small.isJustFilled());
+        assertFalse(small.isJustEmptied());
+        assertFalse(small.isJustTransferred());
+    }
+    @Test
+    public void isJustFilled() {
+        assertFalse(justFilled);
+    }
 
-@After
-public void after() throws Exception { 
-} 
+    @Test
+    public void isJustEmptied() {
+        assertFalse(justEmptied);
+    }
 
-/** 
-* 
-* Method: getCurrentVolume() 
-* 
-*/ 
-@Test
-public void testGetCurrentVolume() throws Exception { 
-//TODO: Test goes here... 
-} 
+    @Test
+    public void isJustTransferred() {
+        assertFalse(justTransferred);
+    }
 
-/** 
-* 
-* Method: fillBottle() 
-* 
-*/ 
-@Test
-public void testFillBottle() throws Exception { 
-//TODO: Test goes here... 
-} 
+    @Test
+    public void resetBottle() {
+        assertFalse(justFilled);
+        assertFalse(justGotTransferred);
+        assertFalse(justTransferred);
+        assertFalse(justEmptied);
+        assertEquals(currentVolume,0);
+    }
 
-/** 
-* 
-* Method: emptyBottle() 
-* 
-*/ 
-@Test
-public void testEmptyBottle() throws Exception { 
-//TODO: Test goes here... 
-} 
+    @Test
+    public void isJustGotTransferred() {
+        assertFalse(justGotTransferred);
+    }
 
-/** 
-* 
-* Method: getTransferredVolume(int volume) 
-* 
-*/ 
-@Test
-public void testGetTransferredVolume() throws Exception { 
-//TODO: Test goes here... 
-} 
+    @Test
+    public void getExceedVolume() {
+        assertEquals(exceedVolume,0);
+    }
 
-/** 
-* 
-* Method: transferVolume(Bottle theOtherBottle) 
-* 
-*/ 
-@Test
-public void testTransferVolume() throws Exception { 
-//TODO: Test goes here... 
-} 
+    @Test
+    public void setExceedVolume() {
+        exceedVolume = 2;
+        assertEquals(exceedVolume,2);
+    }
 
-/** 
-* 
-* Method: isJustFilled() 
-* 
-*/ 
-@Test
-public void testIsJustFilled() throws Exception { 
-//TODO: Test goes here... 
-} 
-
-/** 
-* 
-* Method: isJustEmptied() 
-* 
-*/ 
-@Test
-public void testIsJustEmptied() throws Exception { 
-//TODO: Test goes here... 
-} 
-
-/** 
-* 
-* Method: isJustTransferred() 
-* 
-*/ 
-@Test
-public void testIsJustTransferred() throws Exception { 
-//TODO: Test goes here... 
-} 
-
-/** 
-* 
-* Method: resetBottle() 
-* 
-*/ 
-@Test
-public void testResetBottle() throws Exception { 
-//TODO: Test goes here... 
-} 
-
-/** 
-* 
-* Method: isJustGotTransferred() 
-* 
-*/ 
-@Test
-public void testIsJustGotTransferred() throws Exception { 
-//TODO: Test goes here... 
-} 
-
-/** 
-* 
-* Method: getExceedVolume() 
-* 
-*/ 
-@Test
-public void testGetExceedVolume() throws Exception { 
-//TODO: Test goes here... 
-} 
-
-/** 
-* 
-* Method: setExceedVolume(int exceedVolume) 
-* 
-*/ 
-@Test
-public void testSetExceedVolume() throws Exception { 
-//TODO: Test goes here... 
-} 
-
-/** 
-* 
-* Method: getFullVolume() 
-* 
-*/ 
-@Test
-public void testGetFullVolume() throws Exception { 
-//TODO: Test goes here... 
-} 
+    @Test
+    public void getFullVolume() {
+        assertEquals(fullVolume,5);
+    }
 
 
-} 
+    @Test
+    public void fillBottle() {
+        assertEquals(fullVolume,5);
+    }
+
+    @Test
+    public void emptyBottle() {
+        assertEquals(currentVolume,0);
+    }
+}
