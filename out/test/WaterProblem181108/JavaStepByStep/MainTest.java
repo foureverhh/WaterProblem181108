@@ -33,5 +33,7 @@ public class MainTest {
 
         //Test the getValidNumberInput
 
+        assertEquals(getValidNumberInput(),1);
+
     }
 }

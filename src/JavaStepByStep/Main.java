@@ -184,9 +184,6 @@ public class Main {
                 resultDetail.append("Steps: "+counter);
                 return resultDetail.toString();
             }
-           /* if(counter == 10)
-                System.out.println("----------------------");
-                */
         }
         return null;
     }
@@ -196,7 +193,7 @@ public class Main {
         smallBottle.resetBottle();
     }
 
-    private static int getValidNumberInput(){
+    public static int getValidNumberInput(){
         while(true) {
             try {
                 System.out.println("Input how much liter water you would like to have, please.(1/4)");
