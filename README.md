@@ -16,12 +16,12 @@ Here are two classes in it. One is "Bottle" class,and the other is "Main" class.
   * To each bottle, here are three behaviors.
     * fillBottle - make the bottle to the full volume.
     * emptyBottle - make the current volume to zero.
-    * transferBottle - if the current volume of the bottle is more than zero. Then this bottle can transfer its water to the  other bottle until it is empty itself or the other bottle is filled up and under this situation it can keep the water left in itself.
+    * transferBottle - if the current volume of the bottle is more than zero. Then this bottle can transfer its water to the  other bottle until it it empty itself or the other bottle is filled up, and under this situation it can keep the water left in itself. But if a bottle would transfer water right after it has just transferred water to the other bottle, this time it empty itself. 
 * The "Main" class is to get solutions by calling functions and fields in the "Bottle" class. 
   * Find the simplest solution.
     * Start 100 times searches in "Main" class. 
     * In each search
-    1. It begins byfilling up a big bottle or a small bottle, as it is meaningsless to fill both two or empty them or transfer water between them. And here I use random number between 0 and 1 and switch case to decide which bottle to begin. 
+    1. It begins by filling up a big bottle or a small bottle, as it is meaningsless to fill both two or empty them or transfer water between them. And here I use random number between 0 and 1 and switch case to decide which bottle to begin. 
     2. By using random number among 0 t0 5 to call randomly the 3 behaviors (fill, empty, transfer) of 5L bottle and the same 3 behaviors of 3L bottle to try out a solutin that can get target volume within **10** steps.*Here are five rules which are about how bottle functions shoulde be randomly called. Please read it in comments in codes*
     3. If here is one solution found in a searching, then save the result as a string
     4. Save all solution strings unrepeatly in an ArrayList.
